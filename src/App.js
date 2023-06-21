@@ -55,7 +55,7 @@ function App() {
         })
         resetTurn()  
       }else{
-        resetTurn()
+        setTimeout(()=> resetTurn(), 500) // delay the resetTurn for 700 miliseconds
       }
     }
   },[choiceOne, choiceTwo])
