@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import SingleCard from './components/SingleCard';
 
@@ -7,12 +7,12 @@ import SingleCard from './components/SingleCard';
 // public\img\bird.jpg
 
 const cardImages = [
-  {"src":"/img/baby-swan.jpg"},
-  {"src":"/img/bird.jpg"},
-  {"src":"/img/fish.jpg"},
-  {"src":"/img/horse.jpg"},
-  {"src":"/img/rabbit.jpg"},
-  {"src":"/img/cat.jpg"},
+  {"src":"/img/baby-swan.jpg", matched:false},
+  {"src":"/img/bird.jpg", matched:false},
+  {"src":"/img/fish.jpg", matched:false},
+  {"src":"/img/horse.jpg", matched:false},
+  {"src":"/img/rabbit.jpg", matched:false},
+  {"src":"/img/cat.jpg", matched:false},
 
 ]
 
@@ -40,6 +40,35 @@ function App() {
     choiceOne? setChoiceTwo(card) : setChoiceOne(card)
   }
 
+  // compare two selected cards
+  useEffect(()=> {
+    if (choiceOne && choiceTwo){
+      if(choiceOne.src === choiceTwo.src){
+        setCards(prevCards => {
+          return prevCards.map(card => {
+            if (card.src === choiceOne.src){
+              return{...card, matched: true}
+            }else{
+              return card
+            }
+          })
+        })
+        resetTurn()  
+      }else{
+        resetTurn()
+      }
+    }
+  },[choiceOne, choiceTwo])
+
+  console.log(cards)
+
+  // reset choices & increase turn
+  const resetTurn = () =>{
+    setChoiceOne(null)
+    setChoiceTwo(null)
+    setTurns(prevTurns => prevTurns +1)
+  }
+
   return (
     <div className="App">
         <h1>Memory Card</h1>
@@ -52,6 +81,7 @@ function App() {
             key={card.id} 
             card={card}
             handleChoice={handleChoice}
+            flipped={card === choiceOne || card === choiceTwo || card.matched}
             />
         
         ))}
